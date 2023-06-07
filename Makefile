@@ -1,5 +1,5 @@
 THIS_DIR := $(dir $(abspath $(firstword $(MAKEFILE_LIST))))
-CFLAGS = -O3 -std=gnu++20 -Wall -Wextra -Wshadow -D_GLIBCXX_ASSERTIONS -ggdb3 -fmax-errors=2
+CFLAGS = -O3 -std=gnu++20 -Wall -Wextra -Wshadow -D_GLIBCXX_ASSERTIONS -ggdb3 -fmax-errors=2 -DLOCAL
  
 .PHONY: all gen test atcoder clean
  

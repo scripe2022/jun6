@@ -28,21 +28,22 @@ int32_t main() {
     int n, W; cin >> n >> W;
     vector<int> h(n+1), w(n+1);
     rep(i, 1, n+1) cin >> h[i] >> w[i];
-    int H = *max_element(h.begin(), h.end());
-    vector<vector<vector<int>>> dp(n+1, vector<vector<int>>(H+1, vector<int>(W+1, INF)));
-    // i h w
-    dp[0][0][0] = 0;
+    vector<vector<int>> dp(n+1, vector<int>(n+1, INF)), maxh(n+1, vector<int>(n+1, 0)), sumw(n+1, vector<int>(n+1, 0));
+    rep(i, 1, n+1) rep(j, i, n+1) {
+        if (i == j) maxh[i][j] = h[i], sumw[i][j] = w[i];
+        else maxh[i][j] = max(maxh[i][j-1], h[j]), sumw[i][j] = sumw[i][j-1] + w[j];
+    }
+    dp[0][0] = 0;
     rep(i, 0, n) {
-        rep(j, 0, H+1) {
-            rep(k, 0, W+1) {
-                if (dp[i][j][k] == INF) continue;
-                if (k+w[i+1] <= W) cmin(dp[i+1][max(j, h[i+1])][k+w[i+1]], dp[i][j][k] + max(h[i+1]-j, 0ll));
-                cmin(dp[i+1][h[i+1]][w[i+1]], dp[i][j][k] + h[i+1]);
-            }
+        rep(j, 0, i+1) {
+            if (sumw[i-j+1][i] > W) break;
+            if (dp[i][j] == INF) continue;
+            if (sumw[i-j+1][i] + w[i+1] <= W) cmin(dp[i+1][j+1], dp[i][j] + max(h[i+1] - maxh[i-j+1][i], 0ll));
+            cmin(dp[i+1][1], dp[i][j] + h[i+1]);
         }
     }
     int ans = INF;
-    rep(j, 0, H+1) rep(k, 0, W+1) cmin(ans, dp[n][j][k]);
+    rep(i, 0, n+1) cmin(ans, dp[n][i]);
     cout << ans << endl;
 
     return 0;
